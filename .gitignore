@@ -1,3 +1,9 @@
+# Customize
+ACRE_IID/
+blender/
+log/
+tmp_mask/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
