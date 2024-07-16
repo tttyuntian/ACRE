@@ -173,11 +173,11 @@ def main(args):
     blend_template = os.path.join(args.output_blend_dir, blend_template)
 
     if not os.path.isdir(args.output_image_dir):
-        os.makedirs(args.output_image_dir)
+        os.makedirs(args.output_image_dir, exist_ok=True)
     if not os.path.isdir(args.output_scene_dir):
-        os.makedirs(args.output_scene_dir)
+        os.makedirs(args.output_scene_dir, exist_ok=True)
     if args.save_blendfiles == 1 and not os.path.isdir(args.output_blend_dir):
-        os.makedirs(args.output_blend_dir)
+        os.makedirs(args.output_blend_dir, exist_ok=True)
     
     with open(args.dataset_json, "r") as f:
         dataset = json.load(f)
@@ -372,7 +372,7 @@ def render_scene(args,
     # Create output file nodes
     ofile_nodes = [nodes.new("CompositorNodeOutputFile") for _ in range(num_objects)]
     for i, ofile_node in enumerate(ofile_nodes):    
-        ofile_node.base_path =  "./tmp_mask/IndexOB{}".format(i)
+        ofile_node.base_path =  "./tmp_mask/{}_{}/IndexOB{}".format(args.split, args.start_index, i)
 
     # Create ID mask nodes
     idmask_nodes = [nodes.new("CompositorNodeIDMask") for _ in range(num_objects)]
@@ -399,7 +399,7 @@ def render_scene(args,
     # Read mask files and write to scene_struct
     # Always do this in order to remove the blicket machine
     for i in range(num_objects):
-        mask_file = "./tmp_mask/IndexOB{}/Image0001.png".format(i)
+        mask_file = "./tmp_mask/{}_{}/IndexOB{}/Image0001.png".format(args.split, args.start_index, i)
         img_list = np.array(Image.open(mask_file))[:, :, 0].flatten().tolist()
         mask_list = [int(pixel == 255) for pixel in img_list]
         mask_encoding = utils.mask_encode(mask_list)
